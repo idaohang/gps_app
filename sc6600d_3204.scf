@@ -1,0 +1,49 @@
+;SC6600D scatter file configuration
+
+ROM_LOAD 0x0
+{
+    ROM_EXEC 0x0
+    {
+        tx_illdb.o (Init, +First)
+        * (+RO)
+    }
+    RAM 0x04000000  0xFC000
+    {
+        emc_drv.o(+RO) 
+        sst_drv.o(+RO)
+        spansion_drv.o(+RO)
+        intel_drv.o(+RO)
+        flash.o(+RO)
+        flash_cfg.o(+RO-CODE)
+    	* (+RW, +ZI)
+    }
+
+;Begin, User cannot change the config of midi    
+    ;RAM_MIDI_SCLIB_RO	0x40008000	0x2a00
+    ;{
+    	;midi_sc_api.o (MIDI_SCLIB_RO_AREA)
+    ;}
+    RAM_MIDI_SCLIB_RW	0x40008000	0x3600
+    {
+    	midi_sc_api.o (MIDI_SCLIB_RW_AREA)
+    }
+    ;RAM_MIDI		0x4000B600	0x0D00
+    ;{
+    ;	midi*.* (+RW, +ZI)
+    ;}    
+;End, User cannot change the config of midi
+
+;still reserve 0x900 for midi thread stack
+    RAM_INT 0x4000e9cc  0x1430
+    {
+        tx_ti.o (+RW, +ZI)
+        
+    	tx_ts.o (+RO, +RW, +ZI)
+        deep_sleep.o (+RO, +RW, +ZI)
+    	tx_deepsleep.o (+RO, +RW, +ZI)
+    }
+;FIQ stack space
+;	{
+;		0x4000fdfc~0x4000fffc
+;	}    
+}
